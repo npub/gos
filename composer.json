@@ -1,0 +1,45 @@
+{
+    "name": "npub/gos",
+    "type": "library",
+    "description": "Various IDs validation and formatting class for PHP.",
+    "license": "MIT",
+    "authors": [
+        {"name": "Alexander Vasilyev", "email": "av@zbox.ru"}
+    ],
+    "keywords": ["СНИЛС", "SNILS", "ID", "checksum", "Russia", "validate", "format", "PHP", "Doctrine", "ORM", "Entity", "EntityType"],
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "php": "^8"
+    },
+    "require-dev": {
+        "doctrine/coding-standard": "^9.0",
+        "doctrine/orm": "*",
+        "phpbench/phpbench": "^0.16.10 || ^1.0",
+        "phpstan/phpstan": "0.12.99",
+        "phpunit/phpunit": "^7.5 || ^8.5 || ^9.4",
+        "squizlabs/php_codesniffer": "3.6.1"
+    },
+    "suggest": {
+        "doctrine/orm": "For using objects as Entity field type."
+    },
+    "autoload": {
+        "psr-4": {
+            "Npub\\Gos\\": "/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Npub\\Gos\\Test\\": "/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    },
+    "archive": {
+        "exclude": ["!vendor", "tests", "*phpunit.xml"]
+    }
+}
