@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Npub\Gos\Doctrine\Type;
 
-use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\IntegerType;
 use Npub\Gos\Snils;
-
 use is_null;
 
 /**
@@ -18,7 +16,7 @@ use is_null;
  *
  * @author Александр Васильев <a.vasilyev@1sept.ru>
  */
-class SnilsType extends Type
+class SnilsType extends IntegerType
 {
     /** @var string Имя типа */
     const NAME = 'snils';
@@ -32,25 +30,19 @@ class SnilsType extends Type
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
-    {
-        $column['unsigned'] = true;
-
-        return $platform->getIntegerTypeDeclarationSQL($column);
-    }
-
-    /**
      * Converts a value from its database representation to its PHP representation of this type.
-     * 
+     *
      * @param string $value — The value to convert.
      * @param AbstractPlatform $platform — The currently used database platform.
      * @return Snils|null
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): Snils|null
     {
-        return $value === null ? null : new Snils((int) $value);
+        if ($value === null || $value instanceof Snils) {
+            return $value;
+        }
+
+        return new Snils((int) $value);
     }
 
     /**
@@ -60,22 +52,22 @@ class SnilsType extends Type
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): int|null
     {
-        if (!($value instanceof Snils || is_null($value))) {
-            throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', Snils::class]);
-        }
-
         if ($value === null) {
-            return null;
+            return $value;
         }
 
-        return $value->getID();
+        if ($value instanceof Snils) {
+            return $value->getID();
+        }
+
+        throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', Snils::class]);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function getBindingType(): int
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
     {
-        return ParameterType::INTEGER;
+        return true;
     }
 }

@@ -44,7 +44,7 @@ trait SnilsTrait
      *
      * @param  Snils|string|int|null  $snils  СНИЛС
      * @return  self
-     * 
+     *
      * @throws ValueError
      */
     public function setSnils(Snils|string|int|null $snils): self
