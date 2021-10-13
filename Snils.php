@@ -118,9 +118,15 @@ class Snils implements \Serializable, \Stringable
      *
      * @param string|int $id ID СНИЛСа
      * @return string 2 цифры
+     * 
+     * @throws \ValueError
      */
     public static function checksum(string|int $id): string
     {
+        if ($id < static::ID_MIN || $id > static::ID_MAX) {
+            throw new \ValueError('Недопустимое значение ID СНИЛСа: '. (int) $id);
+        }
+
         $snils9 = str_pad((string) $id, 9, '0', STR_PAD_LEFT);
 
         $sum = 0;
