@@ -6,20 +6,23 @@ namespace Npub\Gos\Doctrine\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
-use Doctrine\DBAL\Types\IntegerType;
-use Npub\Gos\Snils;
+use Doctrine\DBAL\Types\StringType;
 use is_null;
+use Npub\Gos\Snils;
 
 /**
- * СНИЛС (тип для Doctrine ORM)
- * Хранит СНИЛС в виде 9 цифр (INT): без ведущих нулей и контрольной суммы.
+ * СНИЛС (тип для Doctrine ORM, каноническая запись)
+ * Хранит СНИЛС в виде строки из 11 цифр (VARCHAR(11)): c ведущими нулями и контрольной суммой.
+ *
+ * Рекомендуется использзовать тип SnilsType ("snils") как более оптимальный с точки зрения производительности, а данный тип
+ * использовать только для обратной совместимости со старым кодом в процессе миграции.
  *
  * @author Александр Васильев <a.vasilyev@1sept.ru>
  */
-class SnilsType extends IntegerType
+class SnilsCanonicalType extends StringType
 {
     /** @var string Имя типа */
-    const NAME = 'snils';
+    const NAME = 'snils_сanonical';
 
     /**
      * {@inheritdoc}
@@ -42,7 +45,7 @@ class SnilsType extends IntegerType
             return $value;
         }
 
-        return new Snils((int) $value);
+        return Snils::createFromFormat($value, Snils::FORMAT_CANONICAL);
     }
 
     /**
@@ -57,12 +60,12 @@ class SnilsType extends IntegerType
         }
 
         if ($value instanceof Snils) {
-            return $value->getID();
+            return $value->getCanonical();
         }
 
         if (is_int($value) || is_string($value)) {
             if ($snils = Snils::createFromFormat($value)) {
-                return $snils->getID();
+                return $snils->getCanonical();
             }
         }
 

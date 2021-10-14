@@ -15,7 +15,7 @@ trait SnilsTrait
 {
     /**
      * @var Snils|null СНИЛС
-     * @ORM\Column(type="snils", nullable=true, options={"comment": "СНИЛС"})
+     * @ORM\Column(type="snils", nullable=true, options={"unsigned": true, "comment": "СНИЛС"})
      */
     protected Snils|null $snils = null;
 
