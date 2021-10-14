@@ -22,7 +22,7 @@ use Npub\Gos\Snils;
 class SnilsCanonicalType extends StringType
 {
     /** @var string Имя типа */
-    const NAME = 'snils_сanonical';
+    const NAME = 'snils_canonical';
 
     /**
      * {@inheritdoc}

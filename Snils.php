@@ -11,7 +11,7 @@ use substr;
  * СНИЛС
  * Номер, присвоенный лицевому счету конкретного лица в системе пенсионного страхования.
  * Состоит из 11 цифр и имеет формат «AAA-AAA-AA ББ», где ББ — контрольная сумма.
- * 
+ *
  * @author Александр Васильев <av@zbox.ru>
  */
 class Snils implements \Serializable, \Stringable
@@ -65,7 +65,7 @@ class Snils implements \Serializable, \Stringable
      * ID / Страховой номер
      *
      * @return  int
-     */ 
+     */
     public function getID(): int
     {
         return $this->id;
@@ -76,7 +76,7 @@ class Snils implements \Serializable, \Stringable
      *
      * @param  int  $id  ID СНИЛСа
      * @return  self
-     */ 
+     */
     public function setID(int $id): self
     {
         $this->id = $id;
@@ -107,7 +107,7 @@ class Snils implements \Serializable, \Stringable
      * Контрольная сумма СНИЛСа
      *
      * @return  string 2 последние цифры СНИЛСа
-     */ 
+     */
     public function getChecksum(): string
     {
         return static::checksum($this->id);
@@ -118,12 +118,12 @@ class Snils implements \Serializable, \Stringable
      *
      * @param string|int $id ID СНИЛСа
      * @return string 2 цифры
-     * 
+     *
      * @throws \ValueError
      */
     public static function checksum(string|int $id): string
     {
-        if ($id < static::ID_MIN || $id > static::ID_MAX) {
+        if (! static::isIdValid($id)) {
             throw new \ValueError('Недопустимое значение ID СНИЛСа: '. (int) $id);
         }
 
@@ -140,38 +140,46 @@ class Snils implements \Serializable, \Stringable
     /**
      * Проверка СНИЛСа (c контрольной суммой)
      *
-     * @param string|int $snils СНИЛС
+     * @param self|string|int|null $snils СНИЛС
      * @param string|null $format Код формата: Snils::FORMAT_* (если null, то из значения удаляются все знаки-нецифры)
      * @return int|false ID СНИЛСа
-     * 
+     *
      * Из «<Информационное сообщение> ПФ РФ от 20.12.2011 (с изм. от 21.02.2013) "Особенности представления страхователями отчетности в органы ПФР в 2012 году" (вместе с "Правилами проверки документов персонифицированного учета, представляемых в электронной форме")»:
-     * 
-     * == 8. Алгоритм формирования контрольного числа Страхового номера ==
+     *
+     * ## 8. Алгоритм формирования контрольного числа Страхового номера
      * Проверка контрольного числа Страхового номера проводится только для номеров больше номера 001-001-998
      * Контрольное число Страхового номера рассчитывается следующим образом:
      * - каждая цифра Страхового номера умножается на номер своей позиции (позиции отсчитываются с конца)
      * - полученные произведения суммируются
      * - сумма делится на 101
      * - последние две цифры остатка от деления являются Контрольным числом.
-     * 
+     *
      * Например:
      * Указан страховой номер 112-233-445 95
      * Проверяем правильность контрольного числа:
      *   цифры номера     1 1 2 2 3 3 4 4 5
      *   номер позиции    9 8 7 6 5 4 3 2 1
-     * 
+     *
      * 1 x 9 + 1 x 8 + 2 x 7 + 2 x 6 + 3 x 5 + 3 x 4 + 4 x 3 + 4 x 2 + 5 x 1 = 95
      *   95 % 101 = 95
      * Контрольное число = 95 - указано верно
-     * 
+     *
      * Некоторые частные случаи:
      *   99  % 101 = 99
      *   100 % 101 = 00
      *   101 % 101 = 00
      *   102 % 101 = 01
      */
-    public static function validate(string|int $snils, string $format = null): int|false
+    public static function validate(self|string|int|null $snils, string|null $format = null): int|false
     {
+        if ($snils instanceof self) {
+            return static::isIdValid($snils->getID()) ? $snils->getID() : false;
+        }
+
+        if ($snils === null) {
+            return false;
+        }
+
         if ($format === null) {
             $snils = preg_replace('/[^0-9]/', '', (string) $snils);
             $format = static::FORMAT_CANONICAL;
@@ -195,7 +203,7 @@ class Snils implements \Serializable, \Stringable
             }, $snils, $format),
         };
 
-        if ($id < static::ID_MIN || $id > static::ID_MAX) {
+        if (! static::isIdValid($id)) {
             return false;
         }
 
@@ -203,8 +211,19 @@ class Snils implements \Serializable, \Stringable
     }
 
     /**
+     * Проверка ID СНИЛСа
+     *
+     * @param string|integer $id ID СНИЛСа
+     * @return boolean
+     */
+    protected static function isIdValid(string|int $id): bool
+    {
+        return (bool) (static::ID_MIN <= $id && $id <= static::ID_MAX);
+    }
+
+    /**
      * Форматированный СНИЛС
-     * 
+     *
      * @param string $format Код формата: Snils::FORMAT_*
      * @return  string
      */

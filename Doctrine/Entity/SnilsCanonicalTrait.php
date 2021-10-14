@@ -16,7 +16,7 @@ trait SnilsCanonicalTrait
 
     /**
      * @var Snils|null СНИЛС
-     * @ORM\Column(type="snils_сanonical", length=11, nullable=true, options={"fixed": true, "comment": "СНИЛС"})
+     * @ORM\Column(type="snils_canonical", length=11, nullable=true, options={"fixed": true, "comment": "СНИЛС"})
      */
     protected Snils|null $snils = null;
 }

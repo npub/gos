@@ -9,7 +9,7 @@ use Npub\Gos\Snils;
 use ValueError;
 
 /**
- * Ген СНИЛСа для Doctrine ORM Entity
+ * Ген СНИЛСа для Doctrine ORM Entity, хранящий в БД ID СНИЛСа в виде числа из 7–9 цифр
  */
 trait SnilsTrait
 {
