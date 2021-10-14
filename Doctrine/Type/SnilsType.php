@@ -60,7 +60,13 @@ class SnilsType extends IntegerType
             return $value->getID();
         }
 
-        throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', Snils::class]);
+        if (is_int($value) || is_string($value)) {
+            if ($snils = Snils::createFromFormat($value)) {
+                return $snils->getID();
+            }
+        }
+
+        throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', 'int', 'string', Snils::class]);
     }
 
     /**
