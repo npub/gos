@@ -12,10 +12,10 @@ composer require npub/gos
 # config/packages/doctrine.yaml
 
 doctrine:
-    dbal:
-        types:
-            snils: Npub\Gos\Doctrine\Type\SnilsType
-            snils_canonical: Npub\Gos\Doctrine\Type\SnilsCanonicalType
+  dbal:
+    types:
+      snils: Npub\Gos\Doctrine\Type\SnilsType
+      snils_canonical: Npub\Gos\Doctrine\Type\SnilsCanonicalType
 ```
 
 ### Подключение Doctrine типа без Symfony

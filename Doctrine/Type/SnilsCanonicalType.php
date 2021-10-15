@@ -53,7 +53,7 @@ class SnilsCanonicalType extends StringType
      *
      * @throws ConversionException
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform): int|null
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): string|null
     {
         if ($value === null) {
             return $value;
