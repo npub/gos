@@ -50,13 +50,21 @@ trait SnilsTrait
     public function setSnils(Snils|string|int|null $snils): self
     {
         if (is_string($snils) || is_int($snils)) {
+            if ($snils === '') {
+                $this->snils = null;
+                return $this;
+            }
+
             $snils = Snils::createFromFormat($snils);
             if (! $snils) {
                 throw new ValueError('Некорректный СНИЛС');
             }
         }
 
-        $this->snils = $snils;
+        if ($this->snils != $snils) {
+            // Заменяем значение только если оно изменилось
+            $this->snils = $snils;
+        }
         return $this;
     }
 }
