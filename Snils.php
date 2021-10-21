@@ -244,6 +244,25 @@ class Snils implements \Serializable, \Stringable
         };
     }
 
+    /**
+     * Сравнение с другим СНИЛСом
+     *
+     * @param Snils|string|integer|null $snils
+     * @return boolean
+     */
+    public function isEqual(Snils|string|int|null $snils): bool
+    {
+        if ($snils === null) {
+            return false;
+        }
+
+        if (is_string($snils) || is_integer($snils)) {
+            $snils = static::createFromFormat($snils);
+        }
+
+        return $this == $snils;
+    }
+
     /** @inheritDoc */
     public function serialize(): string
     {
