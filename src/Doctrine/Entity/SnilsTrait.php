@@ -61,7 +61,7 @@ trait SnilsTrait
             }
         }
 
-        if ($this->snils != $snils) {
+        if (! $this->snils->isEqual($snils)) {
             // Заменяем значение только если оно изменилось
             $this->snils = $snils;
         }
