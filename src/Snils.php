@@ -47,10 +47,10 @@ class Snils implements Serializable, Stringable
     }
 
     public const FORMAT_CANONICAL = 'C';
-    public const FORMAT_SPACE = 'S';
-    public const FORMAT_HYPHEN = 'H';
+    public const FORMAT_SPACE     = 'S';
+    public const FORMAT_HYPHEN    = 'H';
 
-    public const SEPARATOR_SPACE = ' ';
+    public const SEPARATOR_SPACE  = ' ';
     public const SEPARATOR_HYPHEN = '-';
 
     /**
