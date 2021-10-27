@@ -13,7 +13,12 @@
     },
     "require-dev": {
         "doctrine/coding-standard": "^9.0",
-        "doctrine/orm": "*"
+        "doctrine/orm": "^2.10",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^0.12.99",
+        "phpstan/phpstan-strict-rules": "^0.12.11",
+        "phpunit/phpunit": "^9",
+        "symfony/error-handler": "^5.0"
     },
     "suggest": {
         "doctrine/orm": "For using objects as Entity field type."
@@ -22,17 +27,35 @@
         "psr-4": { "Npub\\Gos\\": "src" }
     },
     "autoload-dev": {
-        "psr-4": { "Npub\\Gos\\Test\\": "tests" }
+        "psr-4": { "Npub\\Gos\\Tests\\": "tests" }
     },
     "extra": {
         "branch-alias": {
             "dev-main": "1.0.x-dev"
+        },
+        "extra": {
+            "phpstan": {
+                "includes": [
+                    "extension.neon"
+                ]
+            }
         }
+    },
+    "scripts": {
+        "test": [
+            "@phpunit",
+            "@phpstan",
+            "@phpcs"
+        ],
+        "phpunit": "vendor/bin/phpunit",
+        "phpstan": "vendor/bin/phpstan analyse src tests --level 3",
+        "phpcs": "vendor/bin/phpcs",
+        "phpcbf": "vendor/bin/phpcbf"
     },
     "config": {
         "sort-packages": true
     },
     "archive": {
-        "exclude": ["!vendor", "tests", "*phpunit.xml"]
+        "exclude": ["!vendor", "test", "*phpunit.xml"]
     }
 }

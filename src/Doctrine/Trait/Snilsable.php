@@ -2,27 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Npub\Gos\Doctrine\Entity;
+namespace Npub\Gos\Doctrine\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
 use Npub\Gos\Snils;
 use ValueError;
 
+use function is_int;
+use function is_string;
+
 /**
- * Ген СНИЛСа для Doctrine ORM Entity, хранящий в БД ID СНИЛСа в виде числа из 7–9 цифр
+ * Ген значимой части СНИЛСа как свойства объекта Doctrine ORM Entity
+ *
+ * В БД хранит ID СНИЛСа в виде числа из 7–9 цифр (без контрольной суммы).
  */
-trait SnilsTrait
+trait Snilsable
 {
     /**
-     * @var Snils|null СНИЛС
      * @ORM\Column(type="snils", nullable=true, options={"unsigned": true, "comment": "СНИЛС"})
+     *
+     * @var Snils|null СНИЛС
      */
     protected Snils|null $snils = null;
 
     /**
      * СНИЛС
-     *
-     * @return Snils|null
      */
     public function getSnils(): Snils|null
     {
@@ -31,8 +35,6 @@ trait SnilsTrait
 
     /**
      * СНИЛС задан?
-     *
-     * @return bool
      */
     public function hasSnils(): bool
     {
@@ -42,8 +44,7 @@ trait SnilsTrait
     /**
      * Задать СНИЛС
      *
-     * @param  Snils|string|int|null  $snils  СНИЛС
-     * @return  self
+     * @param  Snils|string|int|null $snils СНИЛС
      *
      * @throws ValueError
      */
@@ -52,6 +53,7 @@ trait SnilsTrait
         if (is_string($snils) || is_int($snils)) {
             if ($snils === '') {
                 $this->snils = null;
+
                 return $this;
             }
 
@@ -65,6 +67,7 @@ trait SnilsTrait
             // Заменяем значение только если оно изменилось
             $this->snils = $snils;
         }
+
         return $this;
     }
 }

@@ -7,26 +7,22 @@ namespace Npub\Gos\Doctrine\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\StringType;
-use is_null;
 use Npub\Gos\Snils;
+
+use function is_int;
+use function is_string;
 
 /**
  * СНИЛС (тип для Doctrine ORM, каноническая запись)
- * Хранит СНИЛС в виде строки из 11 цифр (VARCHAR(11)): c ведущими нулями и контрольной суммой.
+ * Тип хранит СНИЛС в виде строки из 11 цифр (VARCHAR(11)): c ведущими нулями и контрольной суммой.
  *
- * Рекомендуется использзовать тип SnilsType ("snils") как более оптимальный с точки зрения производительности, а данный тип
- * использовать только для обратной совместимости со старым кодом в процессе миграции.
- *
- * @author Александр Васильев <a.vasilyev@1sept.ru>
+ * Рекомендуется использовать тип SnilsType ("snils") как более оптимальный с точки зрения производительности,
+ * а данный тип использовать только для обратной совместимости со старым кодом в процессе миграции.
  */
 class SnilsCanonicalType extends StringType
 {
-    /** @var string Имя типа */
-    const NAME = 'snils_canonical';
+    public const NAME = 'snils_canonical';
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName(): string
     {
         return self::NAME;
@@ -35,17 +31,18 @@ class SnilsCanonicalType extends StringType
     /**
      * Converts a value from its database representation to its PHP representation of this type.
      *
-     * @param string $value — The value to convert.
+     * @param mixed            $value    — The value to convert.
      * @param AbstractPlatform $platform — The currently used database platform.
-     * @return Snils|null
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform): Snils|null
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): Snils|null
     {
         if ($value === null || $value instanceof Snils) {
             return $value;
         }
 
-        return Snils::createFromFormat($value, Snils::FORMAT_CANONICAL);
+        $snils = Snils::createFromFormat($value, Snils::FORMAT_CANONICAL);
+
+        return $snils instanceof Snils ? $snils : null;
     }
 
     /**
@@ -64,17 +61,19 @@ class SnilsCanonicalType extends StringType
         }
 
         if (is_int($value) || is_string($value)) {
-            if ($snils = Snils::createFromFormat($value)) {
+            $snils = Snils::createFromFormat($value);
+            if ($snils instanceof Snils) {
                 return $snils->getCanonical();
             }
         }
 
-        throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', 'int', 'string', Snils::class]);
+        throw ConversionException::conversionFailedInvalidType(
+            value: $value,
+            toType: $this->getName(),
+            possibleTypes: ['null', 'int', 'string', Snils::class]
+        );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool
     {
         return true;

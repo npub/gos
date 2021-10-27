@@ -1,4 +1,8 @@
 # Библиотека для работы со СНИЛСом (РФ)
+[![Latest Stable Version](http://poser.pugx.org/npub/gos/v)](https://packagist.org/packages/npub/gos)
+[![PHP Version Require](http://poser.pugx.org/npub/gos/require/php)](https://packagist.org/packages/npub/gos)
+[![License](http://poser.pugx.org/npub/gos/license)](https://packagist.org/packages/npub/gos)
+
 В настоящий момент реализована проверка и хранение СНИЛСа с поддержкой Symfony Framework и Docrine ORM Entity Custom Type.
 
 ## Установка
@@ -37,14 +41,14 @@ Type::addType('snils_canonical', SnilsCanonicalType::class);
 <?php
 
 use Doctrine\ORM\Mapping as ORM;
-use Npub\Gos\Doctrine\Entity\SnilsTrait;
+use Npub\Gos\Doctrine\Trait\Snilsable;
 
 /**
  * @ORM\Entity
  */
 class Person
 {
-    use SnilsTrait;
+    use Snilsable;
     …
 }
 ```
