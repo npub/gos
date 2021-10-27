@@ -1,6 +1,7 @@
 # Библиотека для работы со СНИЛСом (РФ)
 [![Latest Stable Version](http://poser.pugx.org/npub/gos/v)](https://packagist.org/packages/npub/gos)
 [![PHP Version Require](http://poser.pugx.org/npub/gos/require/php)](https://packagist.org/packages/npub/gos)
+[![PHP Composer](https://github.com/npub/gos/actions/workflows/php.yml/badge.svg)](https://github.com/npub/gos/actions/workflows/php.yml)
 [![License](http://poser.pugx.org/npub/gos/license)](https://packagist.org/packages/npub/gos)
 
 В настоящий момент реализована проверка и хранение СНИЛСа с поддержкой Symfony Framework и Docrine ORM Entity Custom Type.
