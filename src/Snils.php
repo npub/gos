@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Npub\Gos;
 
+use JsonSerializable;
 use Serializable;
 use Stringable;
 use ValueError;
@@ -26,7 +27,7 @@ use const STR_PAD_LEFT;
  * Номер, присвоенный лицевому счету конкретного лица в системе пенсионного страхования.
  * Состоит из 11 цифр и имеет формат «AAA-AAA-AA ББ», где ББ — контрольная сумма.
  */
-class Snils implements Serializable, Stringable
+class Snils implements Serializable, Stringable, JsonSerializable
 {
     public const ID_MIN = 1001999;
     public const ID_MAX = 999999999;
@@ -124,7 +125,7 @@ class Snils implements Serializable, Stringable
     public static function checksum(string|int $id): string
     {
         if (! static::isIdValid($id)) {
-            throw new ValueError('Недопустимое значение ID СНИЛСа: ' . (int) $id);
+            throw new ValueError('Недопустимое значение ID СНИЛСа: ' . (string) $id);
         }
 
         $snils9 = str_pad((string) $id, 9, '0', STR_PAD_LEFT);
@@ -280,6 +281,11 @@ class Snils implements Serializable, Stringable
         return [
             'id' => $this->id,
         ];
+    }
+
+    public function jsonSerialize(): string
+    {
+        return $this->__toString();
     }
 
     /** @inheritDoc */
