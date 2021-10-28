@@ -63,10 +63,11 @@ use Npub\Gos\Snils;
 // Валидация строки СНИЛСв
 echo Snils::validate('123-456-789 64');  // 123456789
 echo Snils::validate(12345678964, Snils::FORMAT_CANONICAL);  // 123456789
-var_dump(Snils::validate('123-456-789 55'));  // bool(false)
+var_dump(Snils::validate('123-456-789 11'));  // bool(false)
 
 // Форматирование СНИЛСа из строки
-echo Snils::stringFormat('12345678955');  // 123-456-789 64
+echo Snils::stringFormat('12345678964');  // 123-456-789 64
+echo Snils::stringFormat('123-456-789 64', Snils::FORMAT_CANONICAL);  // 12345678964
 
 // Создание объекта сущности СНИЛСа из его ID (7–9 цифр)
 $snils = new Snils(123456789);
