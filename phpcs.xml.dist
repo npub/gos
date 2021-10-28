@@ -11,6 +11,12 @@
     <arg name="error-severity" value="1"/>
     <arg name="warning-severity" value="0"/><!-- no warnings for autochecks -->
 
+    <![CDATA[
+        Use for full check/fix (with warnings):
+        vendor/bin/phpcs --error-severity=1 --warning-severity=1 --report=full
+        vendor/bin/phpcbf --error-severity=1 --warning-severity=1 --report=full
+    ]]>
+
     <!-- Show progress of the run and show sniff names -->
     <arg value="ps"/>
 

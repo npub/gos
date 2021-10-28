@@ -18,7 +18,9 @@
         "phpstan/phpstan": "^0.12.99",
         "phpstan/phpstan-strict-rules": "^0.12.11",
         "phpunit/phpunit": "^9",
-        "symfony/error-handler": "^5.0"
+        "psalm/plugin-phpunit": "0.16.1",
+        "symfony/error-handler": "^5.0",
+        "vimeo/psalm": "4.11.2"
     },
     "suggest": {
         "doctrine/orm": "For using objects as Entity field type."
@@ -45,12 +47,13 @@
         "test": [
             "@phpunit",
             "@phpstan",
-            "@phpcs"
+            "@phpcs",
+            "@psalm"
         ],
         "phpunit": "vendor/bin/phpunit",
-        "phpstan": "vendor/bin/phpstan analyse src tests --level 3",
+        "phpstan": "vendor/bin/phpstan",
         "phpcs": "vendor/bin/phpcs",
-        "phpcbf": "vendor/bin/phpcbf"
+        "psalm": "vendor/bin/psalm"
     },
     "config": {
         "sort-packages": true

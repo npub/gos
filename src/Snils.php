@@ -7,6 +7,7 @@ namespace Npub\Gos;
 use JsonSerializable;
 use Serializable;
 use Stringable;
+use UnexpectedValueException;
 use ValueError;
 
 use function call_user_func;
@@ -24,8 +25,10 @@ use const STR_PAD_LEFT;
 /**
  * СНИЛС
  *
- * Номер, присвоенный лицевому счету конкретного лица в системе пенсионного страхования.
- * Состоит из 11 цифр и имеет формат «AAA-AAA-AA ББ», где ББ — контрольная сумма.
+ * Номер, присвоенный лицевому счету конкретного лица в системе пенсионного страхования РФ,
+ * состоящий из 11 цифр и имеющий формат «AAA-AAA-AA ББ», где ББ — контрольная сумма.
+ *
+ * @see https://ru.wikipedia.org/wiki/Страховой_номер_индивидуального_лицевого_счёта
  */
 class Snils implements Serializable, Stringable, JsonSerializable
 {
@@ -33,12 +36,16 @@ class Snils implements Serializable, Stringable, JsonSerializable
     public const ID_MAX = 999999999;
 
     /**
-     * ID / Страховой номер (до 9 разрядов, без контрольной суммы)
+     * ID / Страховой номер (от 7 до 9 разрядов, не содержит контрольную сумму)
      */
     protected int $id;
 
     /**
      * Создание СНИЛСа из ID
+     *
+     * ВНИМАНИЕ: Проверка на диапазон ID [self::ID_MIN – self::ID_MAX] в конструкторе не производится, но ошибка может
+     * вылезти при попытке подсчёта контрольной суммы. Это необходимо для возможности поиска и замены ошибочно хранимых
+     * в БД значений. Для проверки после создания объекта можно воспользоваться функцией `isValid()`.
      *
      * @param int $id ID СНИЛСа
      */
@@ -139,11 +146,17 @@ class Snils implements Serializable, Stringable, JsonSerializable
     }
 
     /**
-     * Проверка СНИЛСа (c контрольной суммой)
+     * Проверка СНИЛСа (c контрольной суммой) по формальным признакам (без проверки на существование).
      *
-     * @param self|string|int|null $snils  СНИЛС
-     * @param string|null          $format Код формата: Snils::FORMAT_* (если null,
-     *                                     то из значения удаляются все знаки-нецифры)
+     * ВНИМАНИЕ: для проверки существования СНИЛСа и привязки к ФИО / ДР человека нужно отправлять запрос
+     * в Пенсионный фонд РФ
+     *
+     * @see https://es.pfrf.ru/checkSnils/
+     *
+     * @param self|string|int|null $snils      СНИЛС
+     * @param string|null          $formatHint Код формата: Snils::FORMAT_* (если не задан (null),
+     *                                         то из значения удаляются все знаки-нецифры, а потом используется
+     *                                         Snils::FORMAT_CANONICAL)
      *
      * @return int|false ID СНИЛСа
      *
@@ -175,7 +188,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
      *   101 % 101 = 00
      *   102 % 101 = 01
      */
-    public static function validate(self|string|int|null $snils, string|null $format = null): int|false
+    public static function validate(self|string|int|null $snils, string|null $formatHint = null): int|false
     {
         if ($snils instanceof self) {
             return static::isIdValid($snils->getID()) ? $snils->getID() : false;
@@ -185,14 +198,14 @@ class Snils implements Serializable, Stringable, JsonSerializable
             return false;
         }
 
-        if ($format === null) {
-            $snils  = preg_replace('/[^0-9]/', '', (string) $snils);
-            $format = self::FORMAT_CANONICAL;
+        if ($formatHint === null) {
+            $snils      = preg_replace('/[^0-9]/', '', (string) $snils);
+            $formatHint = self::FORMAT_CANONICAL;
         }
 
         $snils = (string) $snils;
 
-        [$id, $checksum] = match ($format) {
+        [$id, $checksum] = match ($formatHint) {
             self::FORMAT_CANONICAL => call_user_func(static function (string $snils): array {
                 $snils = str_pad($snils, 11, '0', STR_PAD_LEFT);
 
@@ -200,18 +213,20 @@ class Snils implements Serializable, Stringable, JsonSerializable
             }, $snils),
 
             self::FORMAT_SPACE,
-            self::FORMAT_HYPHEN => call_user_func(static function (string $snils, string $format): array {
-                $separator = $format === self::FORMAT_SPACE ? '\\s' : self::SEPARATOR_HYPHEN;
+            self::FORMAT_HYPHEN => call_user_func(static function (string $snils, string $formatHint): array {
+                $separator = $formatHint === self::FORMAT_SPACE ? '\\s' : self::SEPARATOR_HYPHEN;
 
                 if (preg_match('/^(\d{3})-(\d{3})-(\d{3})' . $separator . '(\d{2})$/', $snils, $matches) > 0) {
                     return [$matches[1] . $matches[2] . $matches[3], $matches[4]];
                 }
 
                 return [null, null];
-            }, $snils, $format),
+            }, $snils, $formatHint),
+
+            default => throw new UnexpectedValueException('Неизвестный формат')
         };
 
-        if (! static::isIdValid($id)) {
+        if ($id === null || ! static::isIdValid($id)) {
             return false;
         }
 
@@ -219,13 +234,21 @@ class Snils implements Serializable, Stringable, JsonSerializable
     }
 
     /**
-     * Проверка ID СНИЛСа
+     * Проверка произвольного ID СНИЛСа
      *
      * @param string|int|null $id ID СНИЛСа
      */
-    protected static function isIdValid(string|int|null $id): bool
+    public static function isIdValid(string|int|null $id): bool
     {
         return $id !== null && self::ID_MIN <= $id && $id <= self::ID_MAX;
+    }
+
+    /**
+     * Проверка СНИЛСа
+     */
+    public function isValid(): bool
+    {
+        return self::isIdValid($this->id);
     }
 
     /**
@@ -233,7 +256,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
      *
      * @param string $format Код формата: Snils::FORMAT_*
      */
-    public function format(string $format = self::FORMAT_CANONICAL): string
+    public function format(string $format = self::FORMAT_SPACE): string
     {
         $snils = str_pad((string) $this->id, 9, '0', STR_PAD_LEFT) . $this->getChecksum();
 
@@ -247,7 +270,36 @@ class Snils implements Serializable, Stringable, JsonSerializable
                 . ($format === self::FORMAT_SPACE ? self::SEPARATOR_SPACE : self::SEPARATOR_HYPHEN)
                 . substr($snils, 9, 2)
             ,
+
+            default => throw new UnexpectedValueException('Неизвестный формат')
         };
+    }
+
+    /**
+     * Форматированный СНИЛС из произвольно строки
+     *
+     * @param Snils|string|int|null $snils           СНИЛС
+     * @param string                $format          Код формата вывода: Snils::FORMAT_*
+     * @param string|null           $inputFormatHint Код входного формата: Snils::FORMAT_*
+     */
+    public static function stringFormat(
+        Snils|string|int|null $snils,
+        string $format = self::FORMAT_SPACE,
+        string|null $inputFormatHint = null
+    ): string|null {
+        if ($snils === null) {
+            return null;
+        }
+
+        if (is_int($snils) || is_string($snils)) {
+            $snils = self::createFromFormat($snils, $inputFormatHint);
+        }
+
+        if ($snils instanceof self) {
+            return $snils->format($format);
+        }
+
+        return null;
     }
 
     /**
@@ -311,11 +363,14 @@ class Snils implements Serializable, Stringable, JsonSerializable
      */
     public function __debugInfo(): array
     {
+        $isValid = $this->isValid();
+
         return [
             '_id' => $this->id,
-            '_checksum' => $this->getChecksum(),
-            '_canonical' => $this->getCanonical(),
-            '__toString' => $this->__toString(),
+            '_is_valid' => $isValid,
+            '_checksum' => $isValid ? $this->getChecksum() : null,
+            '_canonical' => $isValid ? $this->getCanonical() : null,
+            '__toString' => $isValid ? $this->__toString() : null,
         ];
     }
 }

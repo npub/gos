@@ -60,22 +60,34 @@ class Person
 
 use Npub\Gos\Snils;
 
+// Валидация строки СНИЛСв
+echo Snils::validate('123-456-789 64');  // 123456789
+echo Snils::validate(12345678964, Snils::FORMAT_CANONICAL);  // 123456789
+var_dump(Snils::validate('123-456-789 55'));  // bool(false)
+
+// Форматирование СНИЛСа из строки
+echo Snils::stringFormat('12345678955');  // 123-456-789 64
+
+// Создание объекта сущности СНИЛСа из его ID (7–9 цифр)
 $snils = new Snils(123456789);
+var_dump($snils->isValid());  // bool(true)
 echo $snils->getCanonical();  // 12345678964
 echo $snils->getID();  // 123456789
 echo $snils->getChecksum();  // 64
+echo $snils->format(Snils::FORMAT_SPACE);  // 123-456-789 64
 echo $snils->format(Snils::FORMAT_HYPHEN);  // 123-456-789-64
 echo $snils;  // 123-456-789 64
 
-echo Snils::validate('123-456-789 64');  // 123456789
-
-$snils = Snils::createFromFormat('123_456_789 64');
+// Создание объекта сущности СНИЛСа из строки
+/** @var Snils|false $snils */
+$snils = Snils::createFromFormat('123-456-789 64');
 print_r($snils);
 // Outputs additional info:
 //
 // Npub\Gos\Snils Object
 // (
 //     [_id] => 123456789
+//     [_is_valid] => true
 //     [_checksum] => 64
 //     [_canonical] => 12345678964
 //     [__toString] => 123-456-789 64

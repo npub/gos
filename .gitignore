@@ -1,5 +1,10 @@
 .phpcs-cache
 .phpunit.result.cache
-composer.lock
+/*.phpunit.xml
+/.phpcs-cache
+/composer.lock
+/phpstan.neon
+/phpunit.xml
+/psalm.xml
 phpcs.xml
 vendor/
