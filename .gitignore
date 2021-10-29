@@ -6,5 +6,7 @@
 /phpstan.neon
 /phpunit.xml
 /psalm.xml
+composer.phar
+package.tar
 phpcs.xml
 vendor/

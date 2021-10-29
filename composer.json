@@ -2,7 +2,7 @@
     "name": "npub/gos",
     "type": "library",
     "description": "SNILS validation and formatting class for PHP.",
-    "keywords": ["СНИЛС", "SNILS", "Doctrine", "PHP", "validate", "ORM", "Entity", "EntityType"],
+    "keywords": ["СНИЛС", "SNILS", "PHP", "Doctrine", "PHP", "Doctrine DBAL", "Doctrine ORM", "Entity", "EntityType"],
     "homepage": "https://github.com/npub/gos",
     "license": "MIT",
     "authors": [
@@ -32,9 +32,6 @@
         "psr-4": { "Npub\\Gos\\Tests\\": "tests" }
     },
     "extra": {
-        "branch-alias": {
-            "dev-main": "1.0.x-dev"
-        },
         "extra": {
             "phpstan": {
                 "includes": [
@@ -53,12 +50,9 @@
         "phpunit": "vendor/bin/phpunit",
         "phpstan": "vendor/bin/phpstan",
         "phpcs": "vendor/bin/phpcs",
-        "psalm": "vendor/bin/psalm"
+        "psalm": "vendor/bin/psalm --shepherd"
     },
     "config": {
         "sort-packages": true
-    },
-    "archive": {
-        "exclude": ["!vendor", "test", "*phpunit.xml"]
     }
 }

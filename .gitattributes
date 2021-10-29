@@ -1,11 +1,12 @@
 /.appveyor.yml export-ignore
-/docs export-ignore
+/.editorconfig export-ignore
 /.gitattributes export-ignore
 /.github export-ignore
 /.gitignore export-ignore
+/SECURITY.md export-ignore
+/docs export-ignore
 /phpcs.xml.dist export-ignore
 /phpstan.neon.dist export-ignore
 /phpunit.xml.dist export-ignore
 /psalm.xml.dist export-ignore
-/SECURITY.md export-ignore
 /tests export-ignore
