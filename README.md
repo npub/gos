@@ -1,10 +1,12 @@
-# Библиотека для работы со СНИЛСом (РФ)
-[![Latest Stable Version](http://poser.pugx.org/npub/gos/v)](https://packagist.org/packages/npub/gos)
-[![PHP Version Require](http://poser.pugx.org/npub/gos/require/php)](https://packagist.org/packages/npub/gos)
+# Набор инструментов для работы со СНИЛСом (РФ)
+[![PHP Version Require](https://poser.pugx.org/npub/gos/require/php)](https://packagist.org/packages/npub/gos)
+[![Latest Stable Version](https://poser.pugx.org/npub/gos/v)](https://packagist.org/packages/npub/gos)
 [![PHP Composer](https://github.com/npub/gos/actions/workflows/php.yml/badge.svg)](https://github.com/npub/gos/actions/workflows/php.yml)
-[![License](http://poser.pugx.org/npub/gos/license)](https://packagist.org/packages/npub/gos)
+[![Code Coverage](https://shepherd.dev/github/npub/gos/coverage.svg)](https://shepherd.dev/github/npub/gos)
+[![Docs language](https://img.shields.io/badge/Docs-RU-D52B1E.svg)](https://packagist.org/packages/npub/gos)
+[![License](https://poser.pugx.org/npub/gos/license)](https://packagist.org/packages/npub/gos)
 
-В настоящий момент реализована проверка и хранение СНИЛСа с поддержкой Symfony Framework и Docrine ORM Entity Custom Type.
+Библиотека включает класс [Snils](https://github.com/npub/gos/blob/main/src/Snils.php) для хранения, проверки и форматирования СНИЛСа, а также Doctrine Type-ы и Trait-ы для использования в качестве свойства Entity. Может использоваться как в составе Symfony проекта, так и отдельно.
 
 ## Установка
 ```bash
