@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit>
+<phpunit
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    colors="true"
+    verbose="false"
+>
     <testsuites>
         <testsuite name="Gos Test Suite">
             <directory suffix=".php">tests</directory>

@@ -11,11 +11,13 @@ use UnexpectedValueException;
 
 use function call_user_func;
 use function is_int;
+use function is_numeric;
 use function is_string;
 use function preg_match;
 use function preg_replace;
 use function serialize;
 use function str_pad;
+use function strpos;
 use function substr;
 use function unserialize;
 
@@ -66,11 +68,11 @@ class Snils implements Serializable, Stringable, JsonSerializable
      * @param string|int  $snils  СНИЛС
      * @param string|null $format Код формата: Snils::FORMAT_* (если null, то из значения удаляются все знаки-нецифры)
      */
-    public static function createFromFormat(string|int $snils, ?string $format = null): Snils|false
+    public static function createFromFormat(string|int $snils, ?string $format = null): self|false
     {
         $id = static::validate($snils, $format);
 
-        return is_int($id) ? new Snils($id) : false;
+        return is_int($id) ? new self($id) : false;
     }
 
     /**
@@ -122,13 +124,13 @@ class Snils implements Serializable, Stringable, JsonSerializable
     /**
      * Контрольная сумма для ID СНИЛСа
      *
-     * @param string|int $id ID СНИЛСа
+     * @param string|int|null $id ID СНИЛСа
      *
      * @return string|null 2 цифры (контрольная сумма) | null — если невалидный ID СНИЛСа
      */
-    public static function checksum(string|int $id): string|null
+    public static function checksum(string|int|null $id): string|null
     {
-        if (! static::isIdValid($id)) {
+        if ($id === null || ! static::isIdValid($id)) {
             return null;
         }
 
@@ -156,6 +158,8 @@ class Snils implements Serializable, Stringable, JsonSerializable
      *                                         Snils::FORMAT_CANONICAL)
      *
      * @return int|false ID СНИЛСа
+     *
+     * @throws UnexpectedValueException
      *
      * Из «<Информационное сообщение> ПФ РФ от 20.12.2011 (с изм. от 21.02.2013) "Особенности представления
      * страхователями отчетности в органы ПФР в 2012 году" (вместе с "Правилами проверки документов
@@ -227,7 +231,11 @@ class Snils implements Serializable, Stringable, JsonSerializable
             return false;
         }
 
-        return $checksum === static::checksum($id) ? (int) $id : false;
+        if ($checksum !== static::checksum($id)) {
+            return false;
+        }
+
+        return (int) $id;
     }
 
     /**
@@ -237,7 +245,9 @@ class Snils implements Serializable, Stringable, JsonSerializable
      */
     public static function isIdValid(string|int|null $id): bool
     {
-        return $id !== null && self::ID_MIN <= $id && $id <= self::ID_MAX;
+        return is_numeric($id)
+            && (is_int($id) || strpos($id, '.') === false) // Инвалидация строк типа "12345678.9"
+            && self::ID_MIN <= $id && $id <= self::ID_MAX;
     }
 
     /**
@@ -252,6 +262,8 @@ class Snils implements Serializable, Stringable, JsonSerializable
      * Форматированный СНИЛС
      *
      * @param string $format|null Код формата: Snils::FORMAT_* | null — в случае ошибочного ID СНИЛСа)
+     *
+     * @throws UnexpectedValueException
      */
     public function format(string $format = self::FORMAT_SPACE): string|null
     {
@@ -280,12 +292,12 @@ class Snils implements Serializable, Stringable, JsonSerializable
     /**
      * Форматированный СНИЛС из произвольно строки
      *
-     * @param Snils|string|int|null $snils           СНИЛС
-     * @param string                $format          Код формата вывода: Snils::FORMAT_*
-     * @param string|null           $inputFormatHint Код входного формата: Snils::FORMAT_*
+     * @param self|string|int|null $snils           СНИЛС
+     * @param string               $format          Код формата вывода: Snils::FORMAT_*
+     * @param string|null          $inputFormatHint Код входного формата: Snils::FORMAT_*
      */
     public static function stringFormat(
-        Snils|string|int|null $snils,
+        self|string|int|null $snils,
         string $format = self::FORMAT_SPACE,
         string|null $inputFormatHint = null
     ): string|null {
@@ -307,7 +319,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
     /**
      * Сравнение с другим СНИЛСом
      */
-    public function isEqual(Snils|string|int|null $snils): bool
+    public function isEqual(self|string|int|null $snils): bool
     {
         if ($snils === null) {
             return false;
@@ -315,9 +327,12 @@ class Snils implements Serializable, Stringable, JsonSerializable
 
         if (is_string($snils) || is_int($snils)) {
             $snils = static::createFromFormat($snils);
+            if ($snils === false) {
+                return false;
+            }
         }
 
-        return $this === $snils;
+        return $this->getID() === $snils->getID();
     }
 
     public function serialize(): string

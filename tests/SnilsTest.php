@@ -14,9 +14,14 @@ final class SnilsTest extends TestCase
         return 123456789;
     }
 
+    public function getValidTestSnilsChecksum(): string
+    {
+        return '64';
+    }
+
     public function getValidTestSnilsCanonical(): string
     {
-        return '12345678964';
+        return (string) $this->getValidTestSnilsID() . $this->getValidTestSnilsChecksum();
     }
 
     public function getValidTestSnils(): string
@@ -78,6 +83,42 @@ final class SnilsTest extends TestCase
         self::assertEquals($snilsID, Snils::validate($snils, $format));
     }
 
+    /**
+     * Контрольные суммы различных СНИЛСов
+     *
+     * @return array<int, mixed>
+     */
+    public function snilsChecksumsProvider(): array
+    {
+        return [
+            [null, null],
+            ['', null],
+            [0, null],
+            ['000000000', null],
+            ['123', null],
+            ['123456789_invalid', null],
+            [Snils::ID_MIN - 1, null],
+            [Snils::ID_MIN, '65'],
+            [1002300, '24'],
+            ['1002300.5', null],
+            ['113353201', '00'],
+            ['113353202', '00'],
+            [$this->getValidTestSnilsID(), $this->getValidTestSnilsChecksum()],
+            ['432112345', '14'],
+            ['987654321', '83'],
+            [Snils::ID_MAX, '01'],
+            [Snils::ID_MAX + 1, null],
+        ];
+    }
+
+    /**
+     * @dataProvider snilsChecksumsProvider
+     */
+    public function testChecksums(string|int|null $snils, string|null $checksum): void
+    {
+        self::assertEquals($checksum, Snils::checksum($snils));
+    }
+
     public function testCreationSnilsFromID(): void
     {
         self::assertInstanceOf(
@@ -100,7 +141,7 @@ final class SnilsTest extends TestCase
     /**
      * @dataProvider validTestSnilsFormatsProvider
      */
-    public function testToString(string $snils, string|null $format): void
+    public function testOutputAsString(string $snils, string|null $format): void
     {
         self::assertEquals(
             $this->getValidTestSnils(),
