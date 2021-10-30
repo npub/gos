@@ -8,7 +8,6 @@ use JsonSerializable;
 use Serializable;
 use Stringable;
 use UnexpectedValueException;
-use ValueError;
 
 use function call_user_func;
 use function is_int;
@@ -43,8 +42,8 @@ class Snils implements Serializable, Stringable, JsonSerializable
     /**
      * Создание СНИЛСа из ID
      *
-     * ВНИМАНИЕ: Проверка на диапазон ID [self::ID_MIN – self::ID_MAX] в конструкторе не производится, но ошибка может
-     * вылезти при попытке подсчёта контрольной суммы. Это необходимо для возможности поиска и замены ошибочно хранимых
+     * ВНИМАНИЕ: Проверка на диапазон ID [self::ID_MIN – self::ID_MAX] в конструкторе не производится
+     * (только в функции `createFromFormat()`). Это необходимо для возможности поиска и замены ошибочно хранимых
      * в БД значений. Для проверки после создания объекта можно воспользоваться функцией `isValid()`.
      *
      * @param int $id ID СНИЛСа
@@ -97,7 +96,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
     /**
      * Вывод СНИЛСа в формате «XXXXXXXXXYY»
      */
-    public function getCanonical(): string
+    public function getCanonical(): string|null
     {
         return $this->format(self::FORMAT_CANONICAL);
     }
@@ -107,15 +106,15 @@ class Snils implements Serializable, Stringable, JsonSerializable
      */
     public function __toString(): string
     {
-        return $this->format(self::FORMAT_SPACE);
+        return $this->format(self::FORMAT_SPACE) ?? '';
     }
 
     /**
      * Контрольная сумма СНИЛСа
      *
-     * @return  string 2 последние цифры СНИЛСа
+     * @return  string|null 2 последние цифры СНИЛСа
      */
-    public function getChecksum(): string
+    public function getChecksum(): string|null
     {
         return static::checksum($this->id);
     }
@@ -125,14 +124,12 @@ class Snils implements Serializable, Stringable, JsonSerializable
      *
      * @param string|int $id ID СНИЛСа
      *
-     * @return string 2 цифры
-     *
-     * @throws ValueError
+     * @return string|null 2 цифры (контрольная сумма) | null — если невалидный ID СНИЛСа
      */
-    public static function checksum(string|int $id): string
+    public static function checksum(string|int $id): string|null
     {
         if (! static::isIdValid($id)) {
-            throw new ValueError('Недопустимое значение ID СНИЛСа: ' . (string) $id);
+            return null;
         }
 
         $snils9 = str_pad((string) $id, 9, '0', STR_PAD_LEFT);
@@ -223,10 +220,10 @@ class Snils implements Serializable, Stringable, JsonSerializable
                 return [null, null];
             }, $snils, $formatHint),
 
-            default => throw new UnexpectedValueException('Неизвестный формат')
+            default => throw new UnexpectedValueException('Неизвестный формат СНИЛСа')
         };
 
-        if ($id === null || ! static::isIdValid($id)) {
+        if ($id === null || $checksum === null || ! static::isIdValid($id)) {
             return false;
         }
 
@@ -254,11 +251,16 @@ class Snils implements Serializable, Stringable, JsonSerializable
     /**
      * Форматированный СНИЛС
      *
-     * @param string $format Код формата: Snils::FORMAT_*
+     * @param string $format|null Код формата: Snils::FORMAT_* | null — в случае ошибочного ID СНИЛСа)
      */
-    public function format(string $format = self::FORMAT_SPACE): string
+    public function format(string $format = self::FORMAT_SPACE): string|null
     {
-        $snils = str_pad((string) $this->id, 9, '0', STR_PAD_LEFT) . $this->getChecksum();
+        $checksum = $this->getChecksum();
+        if ($checksum === null) {
+            return null;
+        }
+
+        $snils = str_pad((string) $this->id, 9, '0', STR_PAD_LEFT) . $checksum;
 
         return match ($format) {
             self::FORMAT_CANONICAL => $snils,
@@ -271,7 +273,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
                 . substr($snils, 9, 2)
             ,
 
-            default => throw new UnexpectedValueException('Неизвестный формат')
+            default => throw new UnexpectedValueException('Неизвестный формат СНИЛСа')
         };
     }
 
@@ -335,6 +337,9 @@ class Snils implements Serializable, Stringable, JsonSerializable
         ];
     }
 
+    /**
+     * Сериализация для JSON
+     */
     public function jsonSerialize(): string
     {
         return $this->__toString();
@@ -368,9 +373,9 @@ class Snils implements Serializable, Stringable, JsonSerializable
         return [
             '_id' => $this->id,
             '_is_valid' => $isValid,
-            '_checksum' => $isValid ? $this->getChecksum() : null,
-            '_canonical' => $isValid ? $this->getCanonical() : null,
-            '__toString' => $isValid ? $this->__toString() : null,
+            '_checksum' => $this->getChecksum(),
+            '_canonical' => $this->getCanonical(),
+            '__toString' => $this->__toString(),
         ];
     }
 }

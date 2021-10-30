@@ -6,7 +6,6 @@ namespace Npub\Gos\Tests;
 
 use Npub\Gos\Snils;
 use PHPUnit\Framework\TestCase;
-use ValueError;
 
 final class SnilsTest extends TestCase
 {
@@ -111,7 +110,9 @@ final class SnilsTest extends TestCase
 
     public function testInvalidSnilsString(): void
     {
-        $this->expectException(ValueError::class);
-        Snils::checksum('12345');
+        self::assertEquals(
+            null,
+            Snils::checksum('12345')
+        );
     }
 }
