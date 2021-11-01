@@ -33,6 +33,8 @@ use const STR_PAD_LEFT;
  */
 class Snils implements Serializable, Stringable, JsonSerializable
 {
+    public const NAME = 'snils';
+
     public const ID_MIN = 1001999;
     public const ID_MAX = 999999999;
 
@@ -55,9 +57,9 @@ class Snils implements Serializable, Stringable, JsonSerializable
         $this->id = $id;
     }
 
-    public const FORMAT_CANONICAL = 'C';
-    public const FORMAT_SPACE     = 'S';
-    public const FORMAT_HYPHEN    = 'H';
+    public const FORMAT_CANONICAL = 'c';
+    public const FORMAT_SPACE     = 's';
+    public const FORMAT_HYPHEN    = 'h';
 
     public const SEPARATOR_SPACE  = ' ';
     public const SEPARATOR_HYPHEN = '-';
@@ -152,10 +154,10 @@ class Snils implements Serializable, Stringable, JsonSerializable
      *
      * @see https://es.pfrf.ru/checkSnils/
      *
-     * @param self|string|int|null $snils      СНИЛС
-     * @param string|null          $formatHint Код формата: Snils::FORMAT_* (если не задан (null),
-     *                                         то из значения удаляются все знаки-нецифры, а потом используется
-     *                                         Snils::FORMAT_CANONICAL)
+     * @param self|string|int|null $snils  СНИЛС
+     * @param string|null          $format Код формата: Snils::FORMAT_* (если не задан (null),
+     *                                     то из значения удаляются все знаки-нецифры, а потом используется
+     *                                     Snils::FORMAT_CANONICAL)
      *
      * @return int|false ID СНИЛСа
      *
@@ -189,24 +191,24 @@ class Snils implements Serializable, Stringable, JsonSerializable
      *   101 % 101 = 00
      *   102 % 101 = 01
      */
-    public static function validate(self|string|int|null $snils, string|null $formatHint = null): int|false
+    public static function validate(self|string|int|null $snils, string|null $format = null): int|false
     {
-        if ($snils instanceof self) {
-            return static::isIdValid($snils->getID()) ? $snils->getID() : false;
-        }
-
         if ($snils === null) {
             return false;
         }
 
-        if ($formatHint === null) {
-            $snils      = preg_replace('/[^0-9]/', '', (string) $snils);
-            $formatHint = self::FORMAT_CANONICAL;
+        if ($snils instanceof self) {
+            return static::isIdValid($snils->getID()) ? $snils->getID() : false;
+        }
+
+        if ($format === null) {
+            $snils  = preg_replace('/[^0-9]/', '', (string) $snils);
+            $format = self::FORMAT_CANONICAL;
         }
 
         $snils = (string) $snils;
 
-        [$id, $checksum] = match ($formatHint) {
+        [$id, $checksum] = match ($format) {
             self::FORMAT_CANONICAL => call_user_func(static function (string $snils): array {
                 $snils = str_pad($snils, 11, '0', STR_PAD_LEFT);
 
@@ -214,17 +216,17 @@ class Snils implements Serializable, Stringable, JsonSerializable
             }, $snils),
 
             self::FORMAT_SPACE,
-            self::FORMAT_HYPHEN => call_user_func(static function (string $snils, string $formatHint): array {
-                $separator = $formatHint === self::FORMAT_SPACE ? '\\s' : self::SEPARATOR_HYPHEN;
+            self::FORMAT_HYPHEN => call_user_func(static function (string $snils, string $format): array {
+                $separator = $format === self::FORMAT_SPACE ? '\\s' : self::SEPARATOR_HYPHEN;
 
                 if (preg_match('/^(\d{3})-(\d{3})-(\d{3})' . $separator . '(\d{2})$/', $snils, $matches) > 0) {
                     return [$matches[1] . $matches[2] . $matches[3], $matches[4]];
                 }
 
                 return [null, null];
-            }, $snils, $formatHint),
+            }, $snils, $format),
 
-            default => throw new UnexpectedValueException('Неизвестный формат СНИЛСа')
+            default => throw new UnexpectedValueException('Неизвестный формат СНИЛСа: ' . $format)
         };
 
         if ($id === null || $checksum === null || ! static::isIdValid($id)) {
@@ -259,6 +261,16 @@ class Snils implements Serializable, Stringable, JsonSerializable
     }
 
     /**
+     * Является ли параметр СНИЛСом
+     *
+     * @param self|string|int|null $snils Проверяемый СНИЛС
+     */
+    public static function isSnils(self|string|int|null $snils): bool
+    {
+        return (bool) self::validate($snils);
+    }
+
+    /**
      * Форматированный СНИЛС
      *
      * @param string $format|null Код формата: Snils::FORMAT_* | null — в случае ошибочного ID СНИЛСа)
@@ -285,28 +297,32 @@ class Snils implements Serializable, Stringable, JsonSerializable
                 . substr($snils, 9, 2)
             ,
 
-            default => throw new UnexpectedValueException('Неизвестный формат СНИЛСа')
+            default => throw new UnexpectedValueException('Неизвестный формат СНИЛСа: ' . $format)
         };
     }
 
     /**
      * Форматированный СНИЛС из произвольно строки
      *
-     * @param self|string|int|null $snils           СНИЛС
-     * @param string               $format          Код формата вывода: Snils::FORMAT_*
-     * @param string|null          $inputFormatHint Код входного формата: Snils::FORMAT_*
+     * @param self|string|int|null $snils        СНИЛС
+     * @param string|null          $format       Код формата вывода: Snils::FORMAT_*
+     * @param string|null          $sourceFormat Код входного формата: Snils::FORMAT_*
      */
     public static function stringFormat(
         self|string|int|null $snils,
-        string $format = self::FORMAT_SPACE,
-        string|null $inputFormatHint = null
+        string|null $format = self::FORMAT_SPACE,
+        string|null $sourceFormat = null
     ): string|null {
         if ($snils === null) {
             return null;
         }
 
+        if ($format === null) {
+            $format = self::FORMAT_SPACE;
+        }
+
         if (is_int($snils) || is_string($snils)) {
-            $snils = self::createFromFormat($snils, $inputFormatHint);
+            $snils = self::createFromFormat($snils, $sourceFormat);
         }
 
         if ($snils instanceof self) {

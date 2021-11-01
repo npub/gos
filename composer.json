@@ -2,7 +2,7 @@
     "name": "npub/gos",
     "type": "library",
     "description": "SNILS validation and formatting class for PHP.",
-    "keywords": ["СНИЛС", "SNILS", "PHP", "Doctrine", "PHP", "Doctrine DBAL", "Doctrine ORM", "Entity", "EntityType"],
+    "keywords": ["СНИЛС", "SNILS", "PHP", "Doctrine", "Symfony", "Twig", "Doctrine DBAL", "Doctrine ORM", "Entity", "EntityType"],
     "homepage": "https://github.com/npub/gos",
     "license": "MIT",
     "authors": [
@@ -20,10 +20,12 @@
         "phpunit/phpunit": "^9",
         "psalm/plugin-phpunit": "0.16.1",
         "symfony/error-handler": "^5.0",
+        "twig/twig": "^2.4|^3.0",
         "vimeo/psalm": "4.11.2"
     },
     "suggest": {
-        "doctrine/orm": "For using objects as Entity field type."
+        "doctrine/orm": "For using objects as Entity field type.",
+        "twig/twig": "For using filters."
     },
     "autoload": {
         "psr-4": { "Npub\\Gos\\": "src" }

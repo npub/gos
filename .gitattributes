@@ -1,3 +1,10 @@
+# Git
+.gitattributes text
+.gitignore text
+.gitconfig text
+.gitmodules text
+
+# Ignore export
 /.appveyor.yml export-ignore
 /.editorconfig export-ignore
 /.gitattributes export-ignore
@@ -10,3 +17,20 @@
 /phpunit.xml.dist export-ignore
 /psalm.xml.dist export-ignore
 /tests export-ignore
+
+# PHP
+*.php diff=php
+*.phar -diff
+
+# Documents
+*.markdown text
+*.md text
+LICENSE text
+*README* text
+*.xml.dist text
+*.neon.dist text
+*.xml text
+*.json text
+.editorconfig
+.gitattributes
+.gitignore

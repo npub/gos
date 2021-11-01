@@ -1,0 +1,32 @@
+--TEST--
+"snils_format" filter
+--TEMPLATE--
+{{ snils_object|snils_format }}
+{{ '12345678964'|snils_format }}
+{{ '12345678964'|snils_format() }}
+{{ '12345678964'|snils_format('c') }}
+{{ '12345678964'|snils_format(constant('FORMAT_CANONICAL', snils_object)) }}
+{{ '12345678964'|snils_format('s') }}
+{{ '12345678964'|snils_format(constant('FORMAT_SPACE', snils_object)) }}
+{{ '12345678964'|snils_format('h') }}
+{{ '12345678964'|snils_format(constant('FORMAT_HYPHEN', snils_object)) }}
+{{ '123-456-789 11'|snils_format }}
+{{ '123-456-789 64'|snils_format('c', 'h') }}
+{{ '123-456-789 64'|snils_format('c') }}
+{{ '12345678964'|snils_format('s', 'c') }}
+--DATA--
+return ['snils_object' => new \Npub\Gos\Snils(123456789)];
+--EXPECT--
+123-456-789 64
+123-456-789 64
+123-456-789 64
+12345678964
+12345678964
+123-456-789 64
+123-456-789 64
+123-456-789-64
+123-456-789-64
+
+
+12345678964
+123-456-789 64
