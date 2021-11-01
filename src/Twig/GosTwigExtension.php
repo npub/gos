@@ -17,7 +17,7 @@ final class GosTwigExtension extends AbstractExtension
     /**
      * Фильтры расширения
      *
-     * @return array<int, TwigFilter>
+     * @return array<TwigFilter>
      */
     public function getFilters(): array
     {
@@ -31,7 +31,7 @@ final class GosTwigExtension extends AbstractExtension
     /**
      * Тесты расширения
      *
-     * @return array<int, TwigTest>
+     * @return array<TwigTest>
      */
     public function getTests(): array
     {

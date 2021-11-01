@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Npub\Gos\Tests\Twig;
 
 use Npub\Gos\Twig\GosTwigExtension;
+use Twig\Extension\ExtensionInterface;
 use Twig\Test\IntegrationTestCase;
 
 class GosExtensionTest extends IntegrationTestCase
 {
     /**
-     * @return array<int, mixed>
+     * @return array<ExtensionInterface>
      */
     public function getExtensions(): array
     {

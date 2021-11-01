@@ -86,7 +86,7 @@ final class SnilsTest extends TestCase
     /**
      * Контрольные суммы различных СНИЛСов
      *
-     * @return array<int, mixed>
+     * @return array<array<mixed>>
      */
     public function snilsChecksumsProvider(): array
     {
