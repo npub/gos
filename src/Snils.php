@@ -263,10 +263,14 @@ class Snils implements Serializable, Stringable, JsonSerializable
     /**
      * Является ли параметр СНИЛСом
      *
-     * @param self|string|int|null $snils Проверяемый СНИЛС
+     * @param mixed $snils Проверяемый СНИЛС
      */
-    public static function isSnils(self|string|int|null $snils): bool
+    public static function isSnils(mixed $snils): bool
     {
+        if (! ($snils instanceof self || is_string($snils) || is_int($snils) || $snils === null)) {
+            return false;
+        }
+
         return (bool) self::validate($snils);
     }
 

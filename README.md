@@ -6,7 +6,7 @@
 [![Docs language](https://img.shields.io/badge/docs-RU-D52B1E.svg)](https://packagist.org/packages/npub/gos)
 [![License](https://poser.pugx.org/npub/gos/license)](https://packagist.org/packages/npub/gos)
 
-Библиотека содержит класс [Snils](https://github.com/npub/gos/blob/main/src/Snils.php) для хранения, проверки и форматирования СНИЛСа, а также Doctrine Type и Trait для использования в качестве свойства Entity. Может использоваться как в составе Symfony проекта с Doctrine ORM, так и независимо.
+Библиотека содержит класс [Snils](https://github.com/npub/gos/blob/main/src/Snils.php) для хранения, проверки и форматирования СНИЛСа, а также Doctrine Type, Trait для использования в качестве свойств Entity и расширения Twig. Может использоваться как в составе Symfony проекта с Doctrine ORM, так и независимо.
 
 ## Установка
 ```bash

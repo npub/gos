@@ -2,7 +2,7 @@
     "name": "npub/gos",
     "type": "library",
     "description": "SNILS validation and formatting class for PHP.",
-    "keywords": ["СНИЛС", "SNILS", "PHP", "Doctrine", "Symfony", "Twig", "Doctrine DBAL", "Doctrine ORM", "Entity", "EntityType"],
+    "keywords": ["СНИЛС", "SNILS", "PHP", "Doctrine", "Symfony", "Twig", "Doctrine DBAL", "Doctrine ORM", "Entity", "Entity Type"],
     "homepage": "https://github.com/npub/gos",
     "license": "MIT",
     "authors": [

@@ -11,6 +11,11 @@
 {{ '' is snils ? 'true' : 'false' }}
 {{ 123 is snils ? 'true' : 'false' }}
 {{ '123' is snils ? 'true' : 'false' }}
+{{ [] is snils ? 'true' : 'false' }}
+{{ '' is snils ? 'true' : 'false' }}
+{{ '-' is snils ? 'true' : 'false' }}
+{{ false is snils ? 'true' : 'false' }}
+{{ 'not' is snils ? 'true' : 'false' }}
 --DATA--
 return ['snils_object' => new \Npub\Gos\Snils(123456789)];
 --EXPECT--
@@ -19,6 +24,11 @@ true
 true
 true
 true
+false
+false
+false
+false
+false
 false
 false
 false
