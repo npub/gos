@@ -7,6 +7,12 @@ namespace Npub\Gos\Tests;
 use Npub\Gos\Snils;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass Snils
+ * @group object
+ * @group Snils
+ * @small
+ */
 final class SnilsTest extends TestCase
 {
     public function getValidTestSnilsID(): int
@@ -46,7 +52,7 @@ final class SnilsTest extends TestCase
     }
 
     /**
-     * Форматы невалидных СНИЛСов 123-456-789 64 или их форматов
+     * Форматы невалидных СНИЛС 123-456-789 64 или их форматов
      *
      * @return array<string, mixed> 'Описание' => ['СНИЛС', 'Формат', false]
      */
@@ -59,6 +65,8 @@ final class SnilsTest extends TestCase
             'too short / auto' => ['12345', null, false],
             'too long / auto'  => ['123456789012', null, false],
             'too long / canonical'  => ['1234567890123', Snils::FORMAT_CANONICAL, false],
+
+            'zero int'  => [0, null, false],
 
             'zero / auto'  => ['000-000-000 00', null, false],
             'zero / space'  => ['000-000-000 00', Snils::FORMAT_SPACE, false],
@@ -75,6 +83,7 @@ final class SnilsTest extends TestCase
     }
 
     /**
+     * @covers ::validate
      * @dataProvider validTestSnilsFormatsProvider
      * @dataProvider invalidTestSnilsesAndFormatsProvider
      */
@@ -84,7 +93,7 @@ final class SnilsTest extends TestCase
     }
 
     /**
-     * Контрольные суммы различных СНИЛСов
+     * Контрольные суммы различных СНИЛС
      *
      * @return array<array<mixed>>
      */
@@ -112,6 +121,7 @@ final class SnilsTest extends TestCase
     }
 
     /**
+     * @covers ::checksum
      * @dataProvider snilsChecksumsProvider
      */
     public function testChecksums(string|int|null $snils, string|null $checksum): void
@@ -119,6 +129,10 @@ final class SnilsTest extends TestCase
         self::assertEquals($checksum, Snils::checksum($snils));
     }
 
+    /**
+     * @covers ::__construct
+     * @dataProvider snilsChecksumsProvider
+     */
     public function testCreationSnilsFromID(): void
     {
         self::assertInstanceOf(
@@ -128,6 +142,7 @@ final class SnilsTest extends TestCase
     }
 
     /**
+     * @covers ::createFromFormat
      * @dataProvider validTestSnilsFormatsProvider
      */
     public function testCreationFromValidSnilsString(string|int $snils, string|null $format): void
@@ -139,6 +154,8 @@ final class SnilsTest extends TestCase
     }
 
     /**
+     * @covers ::createFromFormat
+     * @covers ::__toString
      * @dataProvider validTestSnilsFormatsProvider
      */
     public function testOutputAsString(string $snils, string|null $format): void
@@ -149,6 +166,11 @@ final class SnilsTest extends TestCase
         );
     }
 
+    /**
+     * @covers ::checksum
+     * @covers ::__toString
+     * @dataProvider validTestSnilsFormatsProvider
+     */
     public function testInvalidSnilsString(): void
     {
         self::assertEquals(

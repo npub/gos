@@ -36,7 +36,8 @@ final class GosTwigExtension extends AbstractExtension
     public function getTests(): array
     {
         return [
-            new TwigTest(Snils::NAME, [Snils::class, 'isSnils']),
+            new TwigTest(Snils::NAME, [Snils::class, 'isSnilsObject']),
+            new TwigTest('valid_' . Snils::NAME, [Snils::class, 'isValidSnils']),
         ];
     }
 }

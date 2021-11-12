@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Npub\Gos;
 
+use Error;
 use JsonSerializable;
 use Serializable;
 use Stringable;
 use UnexpectedValueException;
 
 use function call_user_func;
+use function is_array;
 use function is_int;
 use function is_numeric;
 use function is_string;
@@ -261,17 +263,27 @@ class Snils implements Serializable, Stringable, JsonSerializable
     }
 
     /**
-     * Является ли параметр СНИЛСом
+     * Является ли параметр объектом СНИЛС
      *
      * @param mixed $snils Проверяемый СНИЛС
      */
-    public static function isSnils(mixed $snils): bool
+    public static function isSnilsObject(mixed $snils): bool
     {
-        if (! ($snils instanceof self || is_string($snils) || is_int($snils) || $snils === null)) {
-            return false;
+        return $snils instanceof self;
+    }
+
+    /**
+     * Является ли параметр валидным СНИЛСом
+     *
+     * @param mixed $snils Проверяемый СНИЛС
+     */
+    public static function isValidSnils(mixed $snils): bool
+    {
+        if ($snils instanceof self || is_string($snils) || is_int($snils)) {
+            return (bool) self::validate($snils);
         }
 
-        return (bool) self::validate($snils);
+        return false;
     }
 
     /**
@@ -383,7 +395,13 @@ class Snils implements Serializable, Stringable, JsonSerializable
     /** @inheritDoc */
     public function unserialize($data): void
     {
-        $this->__unserialize(unserialize($data));
+        $unserialized = unserialize($data, ['allowed_classes' => false]);
+
+        if (! is_array($unserialized)) {
+            throw new Error('Invalid data type for unserialization.');
+        }
+
+        $this->__unserialize($unserialized);
     }
 
     /**
@@ -393,7 +411,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
      */
     public function __unserialize(array $data): void
     {
-        $this->id = $data['id'];
+        $this->id = (int) $data['id'];
     }
 
     /**

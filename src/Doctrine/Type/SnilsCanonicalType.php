@@ -40,6 +40,10 @@ class SnilsCanonicalType extends StringType
             return $value;
         }
 
+        if (! is_int($value) && ! is_string($value)) {
+            throw new ConversionException('Unknown format to convert to PHP value.');
+        }
+
         $snils = Snils::createFromFormat($value, Snils::FORMAT_CANONICAL);
 
         return $snils instanceof Snils ? $snils : null;

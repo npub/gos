@@ -1,0 +1,40 @@
+--TEST--
+"valid_snils" test
+--TEMPLATE--
+{{ snils_object is valid_snils ? 'true' : 'false' }}
+{{ snils_object is not valid_snils ? 'true' : 'false' }}
+{{ not(snils_object is valid_snils) ? 'true' : 'false' }}
+{{ '123-456-789 64' is valid_snils ? 'true' : 'false' }}
+{{ '12345678964' is valid_snils ? 'true' : 'false' }}
+{{ '123-456-789-64' is valid_snils ? 'true' : 'false' }}
+{{ '   123*456=789 64\\' is valid_snils ? 'true' : 'false' }}
+{{ '123-456-789 11' is valid_snils ? 'true' : 'false' }}
+{{ null is valid_snils ? 'true' : 'false' }}
+{{ '' is valid_snils ? 'true' : 'false' }}
+{{ 123 is valid_snils ? 'true' : 'false' }}
+{{ '123' is valid_snils ? 'true' : 'false' }}
+{{ [] is valid_snils ? 'true' : 'false' }}
+{{ '' is valid_snils ? 'true' : 'false' }}
+{{ '-' is valid_snils ? 'true' : 'false' }}
+{{ true is valid_snils ? 'true' : 'false' }}
+{{ false is valid_snils ? 'true' : 'false' }}
+--DATA--
+return ['snils_object' => new \Npub\Gos\Snils(123456789)];
+--EXPECT--
+true
+false
+false
+true
+true
+true
+true
+false
+false
+false
+false
+false
+false
+false
+false
+false
+false
