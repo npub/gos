@@ -15,9 +15,7 @@ use Twig\Test\IntegrationTestCase;
  */
 class GosTwigExtensionTest extends IntegrationTestCase
 {
-    /**
-     * @return array<ExtensionInterface>
-     */
+    /** @return array<ExtensionInterface> */
     public function getExtensions(): array
     {
         return [
@@ -30,9 +28,7 @@ class GosTwigExtensionTest extends IntegrationTestCase
         return __DIR__ . '/Fixtures/';
     }
 
-    /**
-     * @return array<mixed>
-     */
+    /** @return array<mixed> */
     public function getLegacyTests(): array
     {
         return $this->getTests('testLegacyIntegration', false);

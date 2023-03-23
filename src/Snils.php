@@ -72,7 +72,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
      * @param string|int  $snils  СНИЛС
      * @param string|null $format Код формата: Snils::FORMAT_* (если null, то из значения удаляются все знаки-нецифры)
      */
-    public static function createFromFormat(string|int $snils, ?string $format = null): self|false
+    public static function createFromFormat(string|int $snils, string|null $format = null): self|false
     {
         $id = static::validate($snils, $format);
 
@@ -102,7 +102,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
     /**
      * Вывод СНИЛСа в формате «XXXXXXXXXYY»
      */
-    public function getCanonical(): ?string
+    public function getCanonical(): string|null
     {
         return $this->format(self::FORMAT_CANONICAL);
     }
@@ -120,7 +120,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
      *
      * @return  string|null 2 последние цифры СНИЛСа
      */
-    public function getChecksum(): ?string
+    public function getChecksum(): string|null
     {
         return static::checksum($this->id);
     }
@@ -132,7 +132,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
      *
      * @return string|null 2 цифры (контрольная сумма) | null — если невалидный ID СНИЛСа
      */
-    public static function checksum(string|int|null $id): ?string
+    public static function checksum(string|int|null $id): string|null
     {
         if ($id === null || ! static::isIdValid($id)) {
             return null;
@@ -293,7 +293,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
      *
      * @throws UnexpectedValueException
      */
-    public function format(string $format = self::FORMAT_SPACE): ?string
+    public function format(string $format = self::FORMAT_SPACE): string|null
     {
         $checksum = $this->getChecksum();
         if ($checksum === null) {
@@ -327,7 +327,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
     public static function stringFormat(
         self|string|int|null $snils,
         string|null $format = self::FORMAT_SPACE,
-        string|null $sourceFormat = null
+        string|null $sourceFormat = null,
     ): string|null {
         if ($snils === null) {
             return null;

@@ -24,12 +24,12 @@ trait Snilsable
      * @var Snils СНИЛС
      */
     #[ORM\Column(type: 'snils', nullable: true, options: ['unsigned' => true, 'comment' => 'СНИЛС'])]
-    protected ?Snils $snils = null;
+    protected Snils|null $snils = null;
 
     /**
      * СНИЛС
      */
-    public function getSnils(): ?Snils
+    public function getSnils(): Snils|null
     {
         return $this->snils;
     }

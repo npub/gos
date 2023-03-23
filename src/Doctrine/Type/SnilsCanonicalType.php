@@ -34,7 +34,7 @@ class SnilsCanonicalType extends StringType
      * @param mixed            $value    — The value to convert.
      * @param AbstractPlatform $platform — The currently used database platform.
      */
-    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?Snils
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): Snils|null
     {
         if ($value === null || $value instanceof Snils) {
             return $value;
@@ -54,7 +54,7 @@ class SnilsCanonicalType extends StringType
      *
      * @throws ConversionException
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): string|null
     {
         if ($value === null) {
             return $value;
@@ -74,7 +74,7 @@ class SnilsCanonicalType extends StringType
         throw ConversionException::conversionFailedInvalidType(
             value: $value,
             toType: $this->getName(),
-            possibleTypes: ['null', 'int', 'string', Snils::class]
+            possibleTypes: ['null', 'int', 'string', Snils::class],
         );
     }
 

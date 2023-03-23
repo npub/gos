@@ -137,7 +137,7 @@ final class SnilsTest extends TestCase
     {
         self::assertInstanceOf(
             Snils::class,
-            new Snils($this->getValidTestSnilsID()) // СНИЛС ID
+            new Snils($this->getValidTestSnilsID()), // СНИЛС ID
         );
     }
 
@@ -149,7 +149,7 @@ final class SnilsTest extends TestCase
     {
         self::assertInstanceOf(
             Snils::class,
-            Snils::createFromFormat($snils, $format)
+            Snils::createFromFormat($snils, $format),
         );
     }
 
@@ -162,7 +162,7 @@ final class SnilsTest extends TestCase
     {
         self::assertEquals(
             $this->getValidTestSnils(),
-            Snils::createFromFormat($snils, $format)
+            Snils::createFromFormat($snils, $format),
         );
     }
 
@@ -175,7 +175,7 @@ final class SnilsTest extends TestCase
     {
         self::assertEquals(
             null,
-            Snils::checksum('12345')
+            Snils::checksum('12345'),
         );
     }
 }

@@ -23,5 +23,5 @@ trait SnilsableCanonical
      * @var Snils СНИЛС
      */
     #[ORM\Column(type: 'snils_canonical', length: 11, nullable: true, options: ['fixed' => true, 'comment' => 'СНИЛС'])]
-    protected ?Snils $snils = null;
+    protected Snils|null $snils = null;
 }
