@@ -4,25 +4,34 @@ declare(strict_types=1);
 
 namespace Npub\Gos\Doctrine\Type;
 
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
-use Doctrine\DBAL\Types\IntegerType;
-use Npub\Gos\Snils;
+use Doctrine\DBAL\Types\Type;
 
 use function is_int;
 use function is_string;
+use Npub\Gos\Snils;
 
 /**
  * СНИЛС (тип для Doctrine ORM)
  * Хранит СНИЛС в виде 9 цифр (INT): без ведущих нулей и контрольной суммы.
  */
-class SnilsType extends IntegerType
+class SnilsType extends Type
 {
     public const NAME = 'snils';
 
     public function getName(): string
     {
         return self::NAME;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    {
+        return $platform->getIntegerTypeDeclarationSQL($column);
     }
 
     /**
@@ -67,6 +76,14 @@ class SnilsType extends IntegerType
             toType: $this->getName(),
             possibleTypes: ['null', 'int', 'string', Snils::class],
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBindingType()
+    {
+        return ParameterType::INTEGER;
     }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool

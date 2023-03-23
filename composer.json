@@ -12,16 +12,16 @@
         "php": "^8"
     },
     "require-dev": {
-        "doctrine/coding-standard": "^11.1.0",
+        "doctrine/coding-standard": "^11.1",
         "doctrine/orm": "^2.14",
-        "phpstan/extension-installer": "^1.2.0",
-        "phpstan/phpstan": "^1.10.7",
-        "phpstan/phpstan-strict-rules": "^1.5.0",
+        "phpstan/extension-installer": "^1.2",
+        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan-strict-rules": "^1.5",
         "phpunit/phpunit": "^10",
-        "psalm/plugin-phpunit": "0.18.4",
-        "symfony/error-handler": "^5.0",
+        "psalm/plugin-phpunit": "^0.18",
+        "symfony/error-handler": "^6.2",
         "twig/twig": "^2.4|^3.0",
-        "vimeo/psalm": "5.8.0"
+        "vimeo/psalm": "^5.8"
     },
     "suggest": {
         "doctrine/orm": "For using objects as Entity field type.",
