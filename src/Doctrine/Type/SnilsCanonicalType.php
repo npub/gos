@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Npub\Gos\Doctrine\Type;
 
@@ -34,7 +32,7 @@ class SnilsCanonicalType extends StringType
      * @param mixed            $value    — The value to convert.
      * @param AbstractPlatform $platform — The currently used database platform.
      */
-    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): Snils|null
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?Snils
     {
         if ($value === null || $value instanceof Snils) {
             return $value;
@@ -54,7 +52,7 @@ class SnilsCanonicalType extends StringType
      *
      * @throws ConversionException
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform): string|null
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
         if ($value === null) {
             return $value;

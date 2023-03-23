@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Npub\Gos\Twig;
 
@@ -17,7 +15,7 @@ final class GosTwigExtension extends AbstractExtension
     /**
      * Фильтры расширения
      *
-     * @return array<TwigFilter>
+     * @return TwigFilter[]
      */
     public function getFilters(): array
     {
@@ -31,7 +29,7 @@ final class GosTwigExtension extends AbstractExtension
     /**
      * Тесты расширения
      *
-     * @return array<TwigTest>
+     * @return TwigTest[]
      */
     public function getTests(): array
     {
