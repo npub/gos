@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Npub\Gos\Doctrine\Trait;
 
@@ -16,10 +18,10 @@ trait SnilsableCanonical
     use Snilsable;
 
     /**
-     * @var Snils СНИЛС
-	 *
      * @ORM\Column(type="snils_canonical", length=11, nullable=true, options={"fixed": true, "comment": "СНИЛС"})
+     *
+     * @var Snils СНИЛС
      */
-	#[ORM\Column(type: 'snils_canonical', length: 11, nullable: true, options: ['fixed' => true, 'comment' => 'СНИЛС'])]
+    #[ORM\Column(type: 'snils_canonical', length: 11, nullable: true, options: ['fixed' => true, 'comment' => 'СНИЛС'])]
     protected ?Snils $snils = null;
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Npub\Gos\Doctrine\Type;
 
@@ -28,7 +30,6 @@ class SnilsType extends IntegerType
      *
      * @param mixed            $value    — The value to convert.
      * @param AbstractPlatform $platform — The currently used database platform.
-     * @return Snils|null
      */
     public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?Snils
     {

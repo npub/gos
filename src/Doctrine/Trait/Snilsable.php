@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Npub\Gos\Doctrine\Trait;
 
@@ -17,11 +19,11 @@ use function is_string;
 trait Snilsable
 {
     /**
+     * @ORM\Column(type="snils", nullable=true, options={"unsigned": true, "comment": "СНИЛС"})
+     *
      * @var Snils СНИЛС
-	 *
-	 * @ORM\Column(type="snils", nullable=true, options={"unsigned": true, "comment": "СНИЛС"})
      */
-	#[ORM\Column(type: 'snils', nullable: true, options: ['unsigned' => true, 'comment' => 'СНИЛС'])]
+    #[ORM\Column(type: 'snils', nullable: true, options: ['unsigned' => true, 'comment' => 'СНИЛС'])]
     protected ?Snils $snils = null;
 
     /**

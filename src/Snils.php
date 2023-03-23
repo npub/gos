@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Npub\Gos;
 
@@ -127,6 +129,7 @@ class Snils implements Serializable, Stringable, JsonSerializable
      * Контрольная сумма для ID СНИЛСа
      *
      * @param string|int|null $id ID СНИЛСа
+     *
      * @return string|null 2 цифры (контрольная сумма) | null — если невалидный ID СНИЛСа
      */
     public static function checksum(string|int|null $id): ?string
