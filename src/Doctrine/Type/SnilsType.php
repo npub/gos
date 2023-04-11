@@ -29,7 +29,7 @@ class SnilsType extends Type
     /**
      * {@inheritdoc}
      */
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return $platform->getIntegerTypeDeclarationSQL($column);
     }
@@ -81,7 +81,7 @@ class SnilsType extends Type
     /**
      * {@inheritdoc}
      */
-    public function getBindingType()
+    public function getBindingType(): int
     {
         return ParameterType::INTEGER;
     }
