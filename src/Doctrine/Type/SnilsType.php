@@ -8,10 +8,12 @@ use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
+use Npub\Gos\Snils;
 
+use function implode;
 use function is_int;
 use function is_string;
-use Npub\Gos\Snils;
+use function sprintf;
 
 /**
  * СНИЛС (тип для Doctrine ORM)
@@ -75,13 +77,10 @@ class SnilsType extends Type
             'Unknown format to convert `%s` to `%s` database value. Available types: `%s`',
             $value,
             $this->getName(),
-            implode('`, `', ['null', 'int', 'string', Snils::class])
+            implode('`, `', ['null', 'int', 'string', Snils::class]),
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBindingType(): ParameterType
     {
         return ParameterType::INTEGER;

@@ -9,8 +9,10 @@ use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\StringType;
 use Npub\Gos\Snils;
 
+use function implode;
 use function is_int;
 use function is_string;
+use function sprintf;
 
 /**
  * СНИЛС (тип для Doctrine ORM, каноническая запись)
@@ -75,7 +77,7 @@ class SnilsCanonicalType extends StringType
             'Unknown format to convert `%s` to `%s` database value. Available types: `%s`',
             $value,
             $this->getName(),
-            implode('`, `', ['null', 'int', 'string', Snils::class])
+            implode('`, `', ['null', 'int', 'string', Snils::class]),
         ));
     }
 
