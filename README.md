@@ -2,7 +2,6 @@
 [![PHP Version Require](https://poser.pugx.org/npub/gos/require/php)](https://packagist.org/packages/npub/gos)
 [![Latest Stable Version](https://poser.pugx.org/npub/gos/v)](https://packagist.org/packages/npub/gos)
 [![PHP Composer](https://github.com/npub/gos/actions/workflows/php.yml/badge.svg)](https://github.com/npub/gos/actions/workflows/php.yml)
-[![Code Coverage](https://shepherd.dev/github/npub/gos/coverage.svg)](https://shepherd.dev/github/npub/gos)
 [![Docs language](https://img.shields.io/badge/docs-RU-D52B1E.svg)](https://packagist.org/packages/npub/gos)
 [![License](https://poser.pugx.org/npub/gos/license)](https://packagist.org/packages/npub/gos)
 

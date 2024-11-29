@@ -3,3 +3,7 @@ parameters:
     paths:
         - src
         - tests
+
+    errorFormat: table
+    editorUrl: 'vscode://file/%%file%%:%%line%%'
+    editorUrlTitle: '%%relFile%%:%%line%%'

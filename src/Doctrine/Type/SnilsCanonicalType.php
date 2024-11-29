@@ -71,11 +71,12 @@ class SnilsCanonicalType extends StringType
             }
         }
 
-        throw ConversionException::conversionFailedInvalidType(
-            value: $value,
-            toType: $this->getName(),
-            possibleTypes: ['null', 'int', 'string', Snils::class],
-        );
+        throw new ConversionException(sprintf(
+            'Unknown format to convert `%s` to `%s` database value. Available types: `%s`',
+            $value,
+            $this->getName(),
+            implode('`, `', ['null', 'int', 'string', Snils::class])
+        ));
     }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool
