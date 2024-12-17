@@ -19,7 +19,7 @@
         "phpstan/phpstan-strict-rules": "^1.5",
         "phpunit/phpunit": "^10",
         "symfony/error-handler": "^6.2",
-        "twig/twig": "^2.4|^3.0"
+        "twig/twig": "^3.11.2"
     },
     "suggest": {
         "doctrine/orm": "For using objects as Entity field type.",
